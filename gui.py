@@ -14,7 +14,7 @@ from PyQt5.QtGui import QIcon
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1181, 679)
+        MainWindow.resize(1250, 750)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         
@@ -79,6 +79,12 @@ class Ui_MainWindow(object):
         
         self.facename = QtWidgets.QLabel(self.left)
         self.facename.setGeometry(QtCore.QRect(220, 630, 201, 31))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(10)
+        font.setBold(True)
+        self.facename.setFont(font)
+        self.facename.setAlignment(QtCore.Qt.AlignCenter)
         self.facename.setObjectName("facename")
 
 
@@ -103,7 +109,7 @@ class Ui_MainWindow(object):
         self.extractfaces_2.setObjectName("extractfaces_2")
         
         self.imgdisplay = QtWidgets.QScrollArea(self.right)
-        self.imgdisplay.setGeometry(QtCore.QRect(10, 90, 711, 231))
+        self.imgdisplay.setGeometry(QtCore.QRect(10, 90, 711, 250))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -128,19 +134,10 @@ class Ui_MainWindow(object):
 
 
 
-        
-        self.name1 = QtWidgets.QLabel(self.frame_2)
-        self.name1.setGeometry(QtCore.QRect(20, 170, 150, 25))
-        self.name1.setObjectName("name1")
-        self.name2 = QtWidgets.QLabel(self.frame_2)
-        self.name2.setGeometry(QtCore.QRect(190, 170, 150, 25))
-        self.name2.setObjectName("name2")
-        self.name3 = QtWidgets.QLabel(self.frame_2)
-        self.name3.setGeometry(QtCore.QRect(360, 170, 150, 25))
-        self.name3.setObjectName("name3")
-        self.name4 = QtWidgets.QLabel(self.frame_2)
-        self.name4.setGeometry(QtCore.QRect(530, 170, 150, 25))
-        self.name4.setObjectName("name4")
+##        
+##        self.name1 = QtWidgets.QLineEdit(self.frame_2)
+##        self.name1.setGeometry(QtCore.QRect(20, 170, 150, 25))
+##        self.name1.setObjectName("name1")
 
 
 
@@ -167,44 +164,25 @@ class Ui_MainWindow(object):
 
         
         self.detailimg = QtWidgets.QScrollArea(self.bottom)
-        self.detailimg.setGeometry(QtCore.QRect(10, 50, 711, 291))
+        self.detailimg.setGeometry(QtCore.QRect(10, 50, 711, 300))
         self.detailimg.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.detailimg.setWidgetResizable(True)
         self.detailimg.setObjectName("detailimg")
         
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 709, 10018))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0,10018, 709))
         self.scrollAreaWidgetContents_2.setMinimumSize(QtCore.QSize(0, 0))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_4.setObjectName("gridLayout_4")
         
         self.frame_3 = QtWidgets.QFrame(self.scrollAreaWidgetContents_2)
-        self.frame_3.setMinimumSize(QtCore.QSize(0, 10000))
+        self.frame_3.setMinimumSize(QtCore.QSize(10000,0))
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_3.setObjectName("frame_3")
         
-        self.fdimg1 = QtWidgets.QLineEdit(self.frame_3)
-        self.fdimg1.setGeometry(QtCore.QRect(20, 20, 200, 200))
-        self.fdimg1.setObjectName("fdimg1")
-        self.fdimg2 = QtWidgets.QLineEdit(self.frame_3)
-        self.fdimg2.setGeometry(QtCore.QRect(240, 20, 200, 200))
-        self.fdimg2.setObjectName("fdimg2")
-        self.fdimg3 = QtWidgets.QLineEdit(self.frame_3)
-        self.fdimg3.setGeometry(QtCore.QRect(460, 20, 200, 200))
-        self.fdimg3.setObjectName("fdimg3")
-
         
-        self.fdtxt1 = QtWidgets.QLineEdit(self.frame_3)
-        self.fdtxt1.setGeometry(QtCore.QRect(20, 230, 201, 41))
-        self.fdtxt1.setObjectName("fdtxt1")
-        self.fdtxt2 = QtWidgets.QLineEdit(self.frame_3)
-        self.fdtxt2.setGeometry(QtCore.QRect(240, 230, 201, 41))
-        self.fdtxt2.setObjectName("fdtxt2")
-        self.fdtxt3 = QtWidgets.QLineEdit(self.frame_3)
-        self.fdtxt3.setGeometry(QtCore.QRect(460, 230, 201, 41))
-        self.fdtxt3.setObjectName("fdtxt3")
         
         self.gridLayout_4.addWidget(self.frame_3, 0, 1, 1, 1)
         self.detailimg.setWidget(self.scrollAreaWidgetContents_2)

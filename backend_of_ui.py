@@ -9,7 +9,7 @@ import cv2
 import os.path
 
 import vid_frame_cap
-#import test
+import test
 import gui
 
 from PyQt5 import QtCore,QtGui, QtWidgets
@@ -21,7 +21,7 @@ from PyQt5.QtCore import pyqtSignal
 class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
     def __init__(self,parent=None):
         super(MainUIClass,self).__init__(parent)
-        #test.load_ram()
+        test.load_ram()
         self.setupUi(self)
         self.path = None
         self.clahedpath = None
@@ -29,6 +29,11 @@ class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
         self.videopath = None
         self.count = None
         self.movingcord = 20
+        self.textmovingcord = 20
+        self.videoset = set()
+
+        self.newvideoset = set()
+        
         
         self.selectimage.clicked.connect(self.selectimage_handler)
         self.process.clicked.connect(self.processClick)
@@ -37,6 +42,8 @@ class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
         self.extractfaces_2.clicked.connect(self.extract_videofaces)
         self.processagain.clicked.connect(self.processagainclahe)
         self.extractuniquefaces.clicked.connect(self.extractuniquefaces_video)
+        self.finddetails.clicked.connect(self.finddetailsfn)
+        
         
         
         
@@ -123,7 +130,6 @@ class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
 
 
     def extractuniquefaces_video(self):
-        #for i in range(20):
         print("Inside Extract Unique")
         path = './faces_in_frames/'
         files = []
@@ -143,13 +149,36 @@ class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
             self.movingcord += 170
             self.imgdisplay5.setPixmap(QtGui.QPixmap(f))
             self.imgdisplay5.setScaledContents(True)
-            
+
+
+        self.threadclass = videorecog(files)
+        self.threadclass.start()
+        self.threadclass.update_videorecog.connect(self.update_videorecog)
+        self.threadclass.update_set.connect(self.update_set)
 
 
 
+    def update_videorecog(self,val):
+        print(val)
+        print("All faces Recognized")
+        self.name1 = QtWidgets.QLabel(self.frame_2)
+        self.name1.setGeometry(QtCore.QRect(self.textmovingcord, 170, 150, 30))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(10)
+        font.setBold(True)
+        self.name1.setFont(font)
+        self.name1.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.name1.setObjectName("name1")
+        self.name1.setText(val)
+        self.name1.show()
+        self.textmovingcord += 170
+        temp = val.split()
+        self.newvideoset.add(str(temp[0]))
         
         
-        #I use the label to display an image.
+        
         
         
             
@@ -163,11 +192,47 @@ class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
         print(self.count)
 
 
+    def finddetailsfn(self):
+        movcord = 20
+        for names in self.newvideoset:
+            print(names)
+            f = '5-celebrity-faces-dataset/train/'+names+'/1.jpeg'
+            self.fdimg1 = QtWidgets.QLabel(self.frame_3)
+            self.fdimg1.setGeometry(QtCore.QRect(movcord, 20, 200, 200))
+            self.fdimg1.setObjectName("fdimg1")
+            self.fdimg1.setPixmap(QtGui.QPixmap(f))
+            self.fdimg1.setScaledContents(True)
+            self.fdimg1.show()
+
+
+            self.fdtxt1 = QtWidgets.QLabel(self.frame_3)
+            self.fdtxt1.setGeometry(QtCore.QRect(movcord, 230, 201, 30))
+            font = QtGui.QFont()
+            font.setFamily("MS Shell Dlg 2")
+            font.setPointSize(10)
+            font.setBold(True)
+            self.fdtxt1.setFont(font)
+            self.fdtxt1.setAlignment(QtCore.Qt.AlignCenter)
+            
+            self.fdtxt1.setObjectName("fdtxt1")
+            self.fdtxt1.setText(names)
+            self.fdtxt1.show()
+
+            movcord += 220
+            
+
+            
+            
+
+
     def update_progressbar(self,val):
         print("back to UI")
         print(val)
         self.count = val
         self.totalfaces.setText(str(int(val))+' faces detected in video')
+
+    def update_set(self,videoset):
+        self.videoset = videoset
 
 
 class ThreadClass(QtCore.QThread):
@@ -181,6 +246,47 @@ class ThreadClass(QtCore.QThread):
         count = vid_frame_cap.extract_to_folder(self.temp)
         print("thread complete")
         self.update_progressbar.emit(count)
+
+
+
+class videorecog(QtCore.QThread):
+    update_videorecog = pyqtSignal(str)
+    update_set = pyqtSignal(set)
+
+    def __init__(self,files, parent=None):
+        super(videorecog,self).__init__(parent)
+        self.files = files
+        self.matchvideoset = set()
+        
+
+    def run(self):
+        print("video thread complete")
+        textmovingcord = 20
+        test.load_ram()
+        for f in self.files:
+            print(f)
+            match = test.match_video(f)
+            print(match)
+            temp = match.split()
+            
+            print(temp[0]+"will be added in set")
+            print(self.matchvideoset)
+            self.matchvideoset.add(str(temp[0]))
+            print("added in set")
+            self.update_videorecog.emit(match)
+
+        self.update_set.emit(self.matchvideoset)
+
+
+
+
+
+            
+            
+
+
+
+
 
 
 a = QtWidgets.QApplication(sys.argv)

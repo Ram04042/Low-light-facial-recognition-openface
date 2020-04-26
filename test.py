@@ -10,7 +10,9 @@ from matplotlib import pyplot
 from PIL import Image
 from numpy import asarray
 from mtcnn.mtcnn import MTCNN
+import keras
 from keras.models import load_model
+import tensorflow as tf
 
 
 
@@ -56,6 +58,9 @@ def get_embedding(model, face_pixels):
 
 def load_ram():
 	# load the facenet model
+	config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 56} )
+	sess = tf.Session(config=config)
+	keras.backend.set_session(sess)
 	global model
 	model = load_model('facenet_keras.h5')
 	print('Loaded Model')
@@ -78,6 +83,7 @@ def load_ram():
 	# fit model
 	model = SVC(kernel='linear', probability=True)
 	model.fit(trainX, trainy)
+	
 
 
 
@@ -98,13 +104,15 @@ def match_pathpack(selection):
 	predict_names = out_encoder.inverse_transform(yhat_class)
 	print('Predicted: %s (%.3f)' % (predict_names[0], class_probability - 6))
 	# plot for fun
-	output = predict_names[0]+" ("+str(round(class_probability - 6,2))+")"
+	output = predict_names[0]+" ("+str(round(class_probability - 6,2))+" %)"
 	return output
 
 
 def match_video(selection):
+	face = Image.open(selection)
+	pixels = asarray(face)
 	required_size=(160, 160)
-	image = Image.fromarray(selection)
+	image = Image.fromarray(pixels)
 	image = image.resize(required_size)
 	face_array = asarray(image)
 	print(face_array)
@@ -120,4 +128,5 @@ def match_video(selection):
 	predict_names = out_encoder.inverse_transform(yhat_class)
 	print('Predicted: %s (%.3f)' % (predict_names[0], class_probability - 6))
 	# plot for fun
-	return predict_names[0]
+	output = predict_names[0]+" ("+str(round(class_probability - 6,2))+" %)"
+	return output
