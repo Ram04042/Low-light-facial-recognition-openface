@@ -155,6 +155,8 @@ class Ui_MainWindow(object):
         self.selectvideo = QtWidgets.QPushButton(self.right)
         self.selectvideo.setGeometry(QtCore.QRect(10, 10, 100, 30))
         self.selectvideo.setObjectName("selectvideo")
+
+        
         
         self.bottom = QtWidgets.QFrame(self.frame)
         self.bottom.setGeometry(QtCore.QRect(480, 330, 781, 351))

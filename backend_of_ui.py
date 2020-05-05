@@ -130,6 +130,12 @@ class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
 
 
     def extractuniquefaces_video(self):
+        self.progressBar = QtWidgets.QProgressBar(self.right)
+        self.progressBar.setGeometry(QtCore.QRect(470, 50, 231, 21))
+        self.progressBar.setProperty("value", 0)
+        self.progressBar.setObjectName("progressBar")
+
+        self.progressBar.show()
         print("Inside Extract Unique")
         path = './faces_in_frames/'
         files = []
@@ -154,7 +160,7 @@ class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
         self.threadclass = videorecog(files)
         self.threadclass.start()
         self.threadclass.update_videorecog.connect(self.update_videorecog)
-        self.threadclass.update_set.connect(self.update_set)
+        self.threadclass.update_percentage.connect(self.update_percentage)
 
 
 
@@ -231,9 +237,8 @@ class MainUIClass(QtWidgets.QMainWindow,gui.Ui_MainWindow):
         self.count = val
         self.totalfaces.setText(str(int(val))+' faces detected in video')
 
-    def update_set(self,videoset):
-        self.videoset = videoset
-
+    def update_percentage(self,percentage):
+        self.progressBar.setValue(percentage)
 
 class ThreadClass(QtCore.QThread):
     update_progressbar = pyqtSignal(float)
@@ -251,7 +256,7 @@ class ThreadClass(QtCore.QThread):
 
 class videorecog(QtCore.QThread):
     update_videorecog = pyqtSignal(str)
-    update_set = pyqtSignal(set)
+    update_percentage = pyqtSignal(int)
 
     def __init__(self,files, parent=None):
         super(videorecog,self).__init__(parent)
@@ -263,7 +268,11 @@ class videorecog(QtCore.QThread):
         print("video thread complete")
         textmovingcord = 20
         test.load_ram()
+        den = len(self.files)
+        num = 0
+        
         for f in self.files:
+            num += 1
             print(f)
             match = test.match_video(f)
             print(match)
@@ -274,8 +283,8 @@ class videorecog(QtCore.QThread):
             self.matchvideoset.add(str(temp[0]))
             print("added in set")
             self.update_videorecog.emit(match)
-
-        self.update_set.emit(self.matchvideoset)
+            self.update_percentage.emit(int((num/den) * 100))
+        
 
 
 
